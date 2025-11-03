@@ -36,7 +36,7 @@
             "Online"});
             this.comboBoxMode.Location = new System.Drawing.Point(80, 15);
             this.comboBoxMode.Name = "comboBoxMode";
-            this.comboBoxMode.Size = new System.Drawing.Size(121, 23);
+            this.comboBoxMode.Size = new System.Drawing.Size(121, 25);
             this.comboBoxMode.TabIndex = 0;
 
             // label1
@@ -54,7 +54,7 @@
             "Hard"});
             this.comboBoxDifficulty.Location = new System.Drawing.Point(300, 15);
             this.comboBoxDifficulty.Name = "comboBoxDifficulty";
-            this.comboBoxDifficulty.Size = new System.Drawing.Size(100, 23);
+            this.comboBoxDifficulty.Size = new System.Drawing.Size(100, 25);
             this.comboBoxDifficulty.TabIndex = 2;
 
             // label2
@@ -67,7 +67,7 @@
             this.txtIP.Location = new System.Drawing.Point(490, 15);
             this.txtIP.Name = "txtIP";
             this.txtIP.PlaceholderText = "127.0.0.1";
-            this.txtIP.Size = new System.Drawing.Size(100, 23);
+            this.txtIP.Size = new System.Drawing.Size(100, 25);
             this.txtIP.TabIndex = 4;
 
             // label3
@@ -79,7 +79,7 @@
             // btnConnect
             this.btnConnect.Location = new System.Drawing.Point(600, 15);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(80, 23);
+            this.btnConnect.Size = new System.Drawing.Size(80, 28);
             this.btnConnect.Text = "Kết nối";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
@@ -87,7 +87,7 @@
             // btnReset
             this.btnReset.Location = new System.Drawing.Point(690, 15);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(80, 23);
+            this.btnReset.Size = new System.Drawing.Size(80, 28);
             this.btnReset.Text = "Chơi lại";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);

@@ -1,0 +1,15 @@
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.GeneratedMSBuildEditorConfig.editorconfig
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.AssemblyInfoInputs.cache
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.AssemblyInfo.cs
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.csproj.CoreCompileInputs.cache
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.sourcelink.json
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\bin\Debug\net9.0-windows\Client.exe
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\bin\Debug\net9.0-windows\Client.deps.json
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\bin\Debug\net9.0-windows\Client.runtimeconfig.json
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\bin\Debug\net9.0-windows\Client.dll
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\bin\Debug\net9.0-windows\Client.pdb
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.dll
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\refint\Client.dll
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.pdb
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\Client.genruntimeconfig.cache
+D:\hoc_nam_3\ky_1\lap_trinh_mang\code\bai_tap_lon\caro\Client\obj\Debug\net9.0-windows\ref\Client.dll
