@@ -27,31 +27,29 @@ namespace CaroServer
         public bool IsXTurn = true; // true = X, false = O
         private static Random rnd = new Random();
 
-        public void Reset()
+       public void Reset()
         {
             if (P1 != null && P2 != null)
             {
-                // Random người đi X/O
+                // random ai đi X
                 if (rnd.Next(2) == 0)
                 {
-                    Send(P1, "ROOM X");
-                    Send(P2, "ROOM O");
+                    // P1 đi X trước
+                    Send(P1, $"START X {P1.Name}");
+                    Send(P2, $"START O {P1.Name}");
                     Send(P1, "TURN");
-                    Send(P1, $"START {P1.Name}");  // Thông báo người đi trước
-                    Send(P2, $"START {P1.Name}");
                     IsXTurn = true;
                 }
                 else
                 {
-                    Send(P1, "ROOM O");
-                    Send(P2, "ROOM X");
+                    // P2 đi X trước
+                    Send(P1, $"START O {P2.Name}");
+                    Send(P2, $"START X {P2.Name}");
                     Send(P2, "TURN");
-                    Send(P1, $"START {P2.Name}");
-                    Send(P2, $"START {P2.Name}");
                     IsXTurn = false;
                 }
             }
-        }
+}
 
         private void Send(Player? p, string text)
         {
@@ -68,6 +66,9 @@ namespace CaroServer
     {
         static List<Player> waitingPlayers = new List<Player>();
         static List<Room> rooms = new List<Room>();
+
+        static Dictionary<string, int> scores = new Dictionary<string, int>();
+
 
         static void Main()
         {
@@ -125,7 +126,7 @@ namespace CaroServer
                     p1.RoomRef = r;
                     p2.RoomRef = r;
 
-                    r.Reset(); // Random người đi trước và gửi START
+                    r.Reset(); 
                 }
             }
 
@@ -151,21 +152,32 @@ namespace CaroServer
                         r.IsXTurn = !r.IsXTurn;
                         Send(other, "TURN");
                     }
-                    else if (msg.StartsWith("WIN"))
+                 else if (msg.StartsWith("WIN"))
                     {
                         string winnerName = msg.Substring(4).Trim();
-                        string log = $"{winnerName} thắng lúc {DateTime.Now}";
+
+                        Room? r = p.RoomRef;
+                        if (r?.P1 == null || r?.P2 == null) return;
+
+                        // Cập nhật tổng thắng
+                        if (!scores.ContainsKey(winnerName))
+                            scores[winnerName] = 0;
+                        scores[winnerName] += 1;
+
+                        int loser1Score = (r.P1.Name != winnerName) ? scores.GetValueOrDefault(r.P1.Name!, 0) : 0;
+                        int loser2Score = (r.P2.Name != winnerName) ? scores.GetValueOrDefault(r.P2.Name!, 0) : 0;
+
+                        string log = $"{winnerName} thắng lúc {DateTime.Now} (Tổng thắng: {scores[winnerName]})";
                         File.AppendAllText("result.txt", log + Environment.NewLine);
                         Console.WriteLine($"SAVE RESULT => {log}");
 
-                        Room? r = p.RoomRef;
-                        if (r?.P1 != null && r?.P2 != null)
-                        {
-                            Send(r.P1, $"WIN {winnerName}");
-                            Send(r.P2, $"WIN {winnerName}");
-                            r.Reset(); // Reset trận mới
-                        }
+                        // Gửi về 2 client
+                        Send(r.P1, $"WIN {winnerName} {scores[winnerName]} {loser1Score}");
+                        Send(r.P2, $"WIN {winnerName} {scores[winnerName]} {loser2Score}");
+
+                        r.Reset();
                     }
+
                 }
             }
             catch (Exception ex)

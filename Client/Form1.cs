@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -42,15 +40,24 @@ namespace CaroClient
         Random rnd = new Random();
 
         ListBox lstHistory = new ListBox();
+        Label lblWinner = new Label();
 
         public Form1()
         {
             InitializeComponent();
             DoubleBuffered = true;
 
+            // ListBox lịch sử
             lstHistory.Location = new Point(BOARD_SIZE * CELL_SIZE + 80, 70);
             lstHistory.Size = new Size(220, 400);
             Controls.Add(lstHistory);
+
+            // Label người thắng
+            lblWinner.Location = new Point(50, BOARD_SIZE * CELL_SIZE + 70);
+            lblWinner.Size = new Size(300, 30);
+            lblWinner.Font = new Font("Arial", 12, FontStyle.Bold);
+            lblWinner.Text = "Người thắng: ";
+            Controls.Add(lblWinner);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -66,6 +73,7 @@ namespace CaroClient
                 for (int j = 0; j < BOARD_SIZE; j++)
                     board[i, j] = Cell.Empty;
 
+            // Chỉ reset lượt và symbol, giữ wins/losses
             myTurn = (currentMode == "Local 2P") ? true : false;
             currentSymbol = Cell.X;
             Invalidate();
@@ -104,11 +112,16 @@ namespace CaroClient
 
                     this.Invoke(new Action(() =>
                     {
-                        if (msg.StartsWith("ROOM"))
+                        if (msg.StartsWith("START"))
                         {
                             string[] p = msg.Split(' ');
-                            mySymbol = (p[1] == "X") ? Cell.X : Cell.O;
+                            string symbol = p[1];
+                            string firstPlayer = p[2];
+
+                            mySymbol = (symbol == "X") ? Cell.X : Cell.O;
                             Text = $"Bạn: {playerName} ({mySymbol})";
+
+                            myTurn = (firstPlayer == playerName);
                         }
                         else if (msg == "TURN")
                         {
@@ -126,11 +139,20 @@ namespace CaroClient
                         }
                         else if (msg.StartsWith("WIN"))
                         {
-                            string winner = msg.Substring(4).Trim();
-                            if (winner == playerName) wins++;
-                            else losses++;
+                            string[] parts = msg.Split(' '); // WIN WinnerName Score
+                            string winner = parts[1];
+                            int totalWins = int.Parse(parts[2]);
+
+                            // Hiển thị tên người thắng
+                            lblWinner.Text = $"Người thắng: {winner}";
+
+                            // Chỉ bên thắng cập nhật score
+                            if (winner == playerName)
+                                wins = totalWins;
+
                             lstHistory.Items.Add($"{winner} thắng ({DateTime.Now:T})");
                             UpdateTitle();
+
                             ResetBoard();
                         }
                     }));
@@ -189,9 +211,6 @@ namespace CaroClient
                 if (CheckWin(row, col))
                 {
                     writer.WriteLine($"WIN {playerName}");
-                    wins++;
-                    UpdateTitle();
-                    ResetBoard();
                 }
             }
             else if (currentMode == "Local 2P")
@@ -233,13 +252,11 @@ namespace CaroClient
             }
         }
 
-        // ======================== AI LOGIC ========================
         private void AITurn()
         {
             Thread.Sleep(400);
             int bestR = -1, bestC = -1;
 
-            // AI tìm ô trống ngẫu nhiên gần nước đi trước
             for (int tries = 0; tries < 1000; tries++)
             {
                 int r = rnd.Next(BOARD_SIZE);
@@ -269,7 +286,6 @@ namespace CaroClient
             myTurn = true;
         }
 
-        // ======================== UTILITIES ========================
         private bool CheckWin(int r, int c)
         {
             int[][] dirs = new int[][] {
@@ -304,7 +320,6 @@ namespace CaroClient
             lblScore.Text = $"Tỷ số: {wins} - {losses}";
         }
 
-        // ======================== BUTTONS ========================
         private void btnConnect_Click(object sender, EventArgs e)
         {
             currentMode = comboBoxMode.SelectedItem?.ToString() ?? "Local 2P";
