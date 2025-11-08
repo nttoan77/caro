@@ -39,8 +39,8 @@ namespace CaroClient
         Cell currentSymbol = Cell.X; // cho Local 2P
         Random rnd = new Random();
 
-        ListBox lstHistory = new ListBox();
-        Label lblWinner = new Label();
+        // ListBox lstHistory = new ListBox();
+        // Label lblWinner = new Label();
 
         public Form1()
         {
@@ -49,7 +49,7 @@ namespace CaroClient
 
             // ListBox lịch sử
             lstHistory.Location = new Point(BOARD_SIZE * CELL_SIZE + 80, 70);
-            lstHistory.Size = new Size(220, 400);
+            lstHistory.Size = new Size(250, 400);
             Controls.Add(lstHistory);
 
             // Label người thắng
@@ -187,6 +187,42 @@ namespace CaroClient
                             50 + j * CELL_SIZE + 5, 50 + i * CELL_SIZE + 5);
                 }
         }
+
+        // ==========================send messenger=====================
+        private void BtnSend_Click(object sender, EventArgs e)
+        {
+            SendMessage();
+        }
+
+        private void TxtMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // tránh tiếng "ding"
+                SendMessage();
+            }
+        }
+
+        private void SendMessage()
+        {
+            string msg = txtMessage.Text.Trim();
+            if (string.IsNullOrEmpty(msg) || writer == null) return;
+
+            // Gửi lên server định dạng CHAT
+            writer.WriteLine($"CHAT {msg}");
+
+            // Hiển thị lên RichTextBox
+            AppendChat($"Bạn: {msg}");
+            txtMessage.Clear();
+        }
+
+        private void AppendChat(string msg)
+        {
+            rtbChat.AppendText(msg + Environment.NewLine);
+            rtbChat.SelectionStart = rtbChat.Text.Length;
+            rtbChat.ScrollToCaret();
+        }
+
 
         // ======================== CLICK BOARD ========================
         protected override void OnMouseClick(MouseEventArgs e)
