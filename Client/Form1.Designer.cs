@@ -7,167 +7,127 @@ namespace CaroClient
     {
         private System.ComponentModel.IContainer components = null;
 
-        private ComboBox comboBoxMode;
-        private Label labelMode;
-        private ComboBox comboBoxDifficulty;
-        private Label labelDifficulty;
-        private TextBox txtIP;
-        private Label labelIP;
-        private Button btnConnect;
-        private Button btnReset;
-        private Label lblScore;
-        private ListBox lstHistory;
-        private Label lblWinner;
-
-        private RichTextBox rtbChat;   // hiển thị tin nhắn
-        private TextBox txtMessage;    // nhập tin nhắn
-        private Button btnSend;        // gửi tin nhắn
+        private System.Windows.Forms.Panel panelBoard;
+        private System.Windows.Forms.ComboBox comboBoxMode;
+        private System.Windows.Forms.ComboBox comboBoxDifficulty;
+        private System.Windows.Forms.TextBox txtIP;
+        private System.Windows.Forms.TextBox txtMessage;
+        private System.Windows.Forms.RichTextBox rtbChat;
+        private System.Windows.Forms.ListBox lstHistory;
+        private System.Windows.Forms.Label lblScore;
+        private System.Windows.Forms.Label lblWinner;
+        private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnSend;
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null)) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
-            this.comboBoxMode = new ComboBox();
-            this.labelMode = new Label();
-            this.comboBoxDifficulty = new ComboBox();
-            this.labelDifficulty = new Label();
-            this.txtIP = new TextBox();
-            this.labelIP = new Label();
-            this.btnConnect = new Button();
-            this.btnReset = new Button();
-            this.lblScore = new Label();
-            this.lstHistory = new ListBox();
-            this.lblWinner = new Label();
+            this.components = new System.ComponentModel.Container();
 
+            this.panelBoard = new System.Windows.Forms.Panel();
+            this.comboBoxMode = new System.Windows.Forms.ComboBox();
+            this.comboBoxDifficulty = new System.Windows.Forms.ComboBox();
+            this.txtIP = new System.Windows.Forms.TextBox();
+            this.txtMessage = new System.Windows.Forms.TextBox();
+            this.rtbChat = new System.Windows.Forms.RichTextBox();
+            this.lstHistory = new System.Windows.Forms.ListBox();
+            this.lblScore = new System.Windows.Forms.Label();
+            this.lblWinner = new System.Windows.Forms.Label();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.btnSend = new System.Windows.Forms.Button();
+
+            // ===================== Form =====================
             this.SuspendLayout();
+            this.ClientSize = new System.Drawing.Size(900, 600);
+            this.Text = "Caro Game";
 
-            // ================= ComboBox Mode =================
-            this.labelMode.Text = "Chế độ:";
-            this.labelMode.Location = new Point(20, 15);
-            this.labelMode.AutoSize = true;
-            this.labelMode.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            // ===================== panelBoard =====================
+            this.panelBoard.Location = new System.Drawing.Point(10, 10);
+            this.panelBoard.Size = new System.Drawing.Size(525, 525);
+            this.panelBoard.BackColor = System.Drawing.Color.Beige;
+            this.panelBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelBoard_Paint);
+            this.panelBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelBoard_MouseClick);
+            this.Controls.Add(this.panelBoard);
 
-            this.comboBoxMode.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxMode.Items.AddRange(new object[] { "Local 2P", "AI", "Online" });
-            this.comboBoxMode.Location = new Point(100, 12);
-            this.comboBoxMode.Size = new Size(120, 25);
-            this.comboBoxMode.Font = new Font("Segoe UI", 10);
-
-            // ================= ComboBox Difficulty =================
-            this.labelDifficulty.Text = "Độ khó:";
-            this.labelDifficulty.Location = new Point(235, 15);
-            this.labelDifficulty.AutoSize = true;
-            this.labelDifficulty.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-
-            this.comboBoxDifficulty.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxDifficulty.Items.AddRange(new object[] { "Easy", "Medium", "Hard" });
-            this.comboBoxDifficulty.Location = new Point(310, 12);
-            this.comboBoxDifficulty.Size = new Size(100, 25);
-            this.comboBoxDifficulty.Font = new Font("Segoe UI", 10);
-
-            // ================= TextBox IP =================
-            this.labelIP.Text = "Server IP:";
-            this.labelIP.Location = new Point(415, 15);
-            this.labelIP.AutoSize = true;
-            this.labelIP.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-
-            this.txtIP.Location = new Point(500, 12);
-            this.txtIP.Size = new Size(100, 25);
-            this.txtIP.Font = new Font("Segoe UI", 10);
-            this.txtIP.PlaceholderText = "127.0.0.1";
-
-            // ================= Buttons =================
-            this.btnConnect.Text = "Bắt đầu";
-            this.btnConnect.Location = new Point(620, 10);
-            this.btnConnect.Size = new Size(80, 28);
-            this.btnConnect.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            this.btnConnect.BackColor = Color.LightGreen;
-            this.btnConnect.FlatStyle = FlatStyle.Flat;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-
-            this.btnReset.Text = "Chơi lại";
-            this.btnReset.Location = new Point(710, 10);
-            this.btnReset.Size = new Size(80, 28);
-            this.btnReset.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            this.btnReset.BackColor = Color.LightCoral;
-            this.btnReset.FlatStyle = FlatStyle.Flat;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-
-            // ================= Label Score =================
-            this.lblScore.Text = "Tỷ số: 0 - 0";
-            this.lblScore.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            this.lblScore.Location = new Point(810, 12);
-            this.lblScore.AutoSize = true;
-
-            // ================= ListBox History =================
-            this.lstHistory.Location = new Point(600, 60);
-            this.lstHistory.Size = new Size(500, 150);
-            this.lstHistory.Font = new Font("Segoe UI", 9);
-            this.lstHistory.BorderStyle = BorderStyle.FixedSingle;
-
-            // ================= Label Winner =================
-            this.lblWinner.Location = new Point(50, 580);
-            this.lblWinner.Size = new Size(400, 30);
-            this.lblWinner.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            this.lblWinner.Text = "Người thắng: ";
-            
-            // ================= RichTextBox Chat =================
-            this.rtbChat = new RichTextBox();
-            this.rtbChat.Location = new Point(600, 230);
-            this.rtbChat.Size = new Size(380, 240);
-            this.rtbChat.Font = new Font("Segoe UI", 9);
-            this.rtbChat.ReadOnly = true;
-            this.rtbChat.BackColor = Color.WhiteSmoke;
-            this.rtbChat.BorderStyle = BorderStyle.FixedSingle;
-
-            // ================= TextBox Message =================
-            this.txtMessage = new TextBox();
-            this.txtMessage.Location = new Point(600, 480);
-            this.txtMessage.Size = new Size(300, 28);
-            this.txtMessage.Font = new Font("Segoe UI", 10);
-            this.txtMessage.KeyDown += TxtMessage_KeyDown; // nhấn Enter gửi
-
-            // ================= Button Send =================
-            this.btnSend = new Button();
-            this.btnSend.Text = "Gửi";
-            this.btnSend.Location = new Point(910, 480);
-            this.btnSend.Size = new Size(70, 28);
-            this.btnSend.BackColor = Color.LightBlue;
-            this.btnSend.FlatStyle = FlatStyle.Flat;
-            this.btnSend.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            this.btnSend.Click += BtnSend_Click;
-
-            // ================= Thêm vào Form =================
-            this.Controls.Add(this.rtbChat);
-            this.Controls.Add(this.txtMessage);
-            this.Controls.Add(this.btnSend);
-                
-
-            // ================= Form =================
-            this.ClientSize = new Size(1000, 650);
-            this.Controls.Add(this.labelMode);
+            // ===================== ComboBoxMode =====================
+            this.comboBoxMode.Location = new System.Drawing.Point(550, 30);
+            this.comboBoxMode.Size = new System.Drawing.Size(150, 30);
+            this.comboBoxMode.Items.AddRange(new object[] { "Local 2P", "Máy", "Người" });
             this.Controls.Add(this.comboBoxMode);
-            this.Controls.Add(this.labelDifficulty);
+
+            // ===================== ComboBoxDifficulty =====================
+            this.comboBoxDifficulty.Location = new System.Drawing.Point(550, 70);
+            this.comboBoxDifficulty.Size = new System.Drawing.Size(150, 30);
+            this.comboBoxDifficulty.Items.AddRange(new object[] { "Dễ", "Trung bình", "Khó", "Rất khó" });
             this.Controls.Add(this.comboBoxDifficulty);
-            this.Controls.Add(this.labelIP);
+
+            // ===================== txtIP =====================
+            this.txtIP.Location = new System.Drawing.Point(550, 110);
+            this.txtIP.Size = new System.Drawing.Size(150, 30);
+            this.txtIP.PlaceholderText = "Nhập IP Server";
             this.Controls.Add(this.txtIP);
-            this.Controls.Add(this.btnConnect);
-            this.Controls.Add(this.btnReset);
+
+            // ===================== lblScore =====================
+            this.lblScore.Location = new System.Drawing.Point(550, 150);
+            this.lblScore.Size = new System.Drawing.Size(200, 30);
+            this.lblScore.Text = "Tỷ số: 0 - 0";
             this.Controls.Add(this.lblScore);
-            this.Controls.Add(this.lstHistory);
+
+            // ===================== lblWinner =====================
+            this.lblWinner.Location = new System.Drawing.Point(550, 180);
+            this.lblWinner.Size = new System.Drawing.Size(200, 30);
+            this.lblWinner.Text = "Người thắng: ";
             this.Controls.Add(this.lblWinner);
 
-            this.Text = "🎮 Game Caro (Client)";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            // ===================== lstHistory =====================
+            this.lstHistory.Location = new System.Drawing.Point(550, 210);
+            this.lstHistory.Size = new System.Drawing.Size(300, 150);
+            this.Controls.Add(this.lstHistory);
 
-            this.BackColor = Color.WhiteSmoke;
+            // ===================== rtbChat =====================
+            this.rtbChat.Location = new System.Drawing.Point(550, 370);
+            this.rtbChat.Size = new System.Drawing.Size(300, 150);
+            this.rtbChat.ReadOnly = true;
+            this.Controls.Add(this.rtbChat);
+
+            // ===================== txtMessage =====================
+            this.txtMessage.Location = new System.Drawing.Point(550, 530);
+            this.txtMessage.Size = new System.Drawing.Size(220, 30);
+            this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtMessage_KeyDown);
+            this.Controls.Add(this.txtMessage);
+
+            // ===================== btnSend =====================
+            this.btnSend.Location = new System.Drawing.Point(780, 530);
+            this.btnSend.Size = new System.Drawing.Size(70, 30);
+            this.btnSend.Text = "Gửi";
+            this.btnSend.Click += new System.EventHandler(this.BtnSend_Click);
+            this.Controls.Add(this.btnSend);
+
+            // ===================== btnConnect =====================
+            this.btnConnect.Location = new System.Drawing.Point(720, 30);
+            this.btnConnect.Size = new System.Drawing.Size(120, 30);
+            this.btnConnect.Text = "Bắt đầu";
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.Controls.Add(this.btnConnect);
+
+            // ===================== btnReset =====================
+            this.btnReset.Location = new System.Drawing.Point(720, 70);
+            this.btnReset.Size = new System.Drawing.Size(120, 30);
+            this.btnReset.Text = "Chơi lại";
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.Controls.Add(this.btnReset);
 
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
     }
 }
