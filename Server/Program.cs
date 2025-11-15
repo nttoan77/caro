@@ -180,6 +180,15 @@ namespace CaroServer
                            Send(r.P2, $"CHAT {fullMsg}");
                         }
                     }
+                    else if (msg == "RESET")
+                    {
+                        Room? r = p.RoomRef;
+                        if (r?.P1 != null && r?.P2 != null)
+                        {
+                            r.Reset(); // reset ván mới
+                        }
+                    }
+
                 }
             }
             catch (Exception ex)

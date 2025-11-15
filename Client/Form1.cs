@@ -29,8 +29,7 @@ namespace CaroClient
 
         string playerName = "Người chơi";
 
-        int wins = 0;
-        int losses = 0;
+        int totalGames = 0; // chỉ cần biến tổng số trận
 
         string currentMode = "Local 2P";
         bool isAI = false;
@@ -42,13 +41,16 @@ namespace CaroClient
         {
             InitializeComponent();
             DoubleBuffered = true;
+            this.Load += Form1_Load;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            comboBoxMode.SelectedIndex = 0;
-            comboBoxDifficulty.SelectedIndex = 0;
+            comboBoxMode.SelectedIndex = 2;        // "Người"
+            comboBoxDifficulty.SelectedIndex = 0;  // "Dễ"
             ResetBoard();
+            isOnline = true;
+            currentMode = "Online";
         }
 
         private void ResetBoard()
@@ -62,20 +64,17 @@ namespace CaroClient
             panelBoard.Invalidate();
         }
 
-        // ======================= DRAW BOARD =======================
         private void PanelBoard_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.Clear(Color.Beige);
 
-            // Vẽ lưới
             for (int i = 0; i <= BOARD_SIZE; i++)
             {
                 g.DrawLine(Pens.Black, 0, i * CELL_SIZE, BOARD_SIZE * CELL_SIZE, i * CELL_SIZE);
                 g.DrawLine(Pens.Black, i * CELL_SIZE, 0, i * CELL_SIZE, BOARD_SIZE * CELL_SIZE);
             }
 
-            // Vẽ X,O
             for (int r = 0; r < BOARD_SIZE; r++)
                 for (int c = 0; c < BOARD_SIZE; c++)
                 {
@@ -86,15 +85,12 @@ namespace CaroClient
                 }
         }
 
-        // ======================= CLICK BOARD =======================
         private void PanelBoard_MouseClick(object sender, MouseEventArgs e)
         {
             int col = e.X / CELL_SIZE;
             int row = e.Y / CELL_SIZE;
 
-            if (row < 0 || col < 0 || row >= BOARD_SIZE || col >= BOARD_SIZE)
-                return;
-
+            if (row < 0 || col < 0 || row >= BOARD_SIZE || col >= BOARD_SIZE) return;
             if (board[row, col] != Cell.Empty) return;
 
             if (currentMode == "Local 2P")
@@ -104,7 +100,7 @@ namespace CaroClient
                 {
                     string winner = (currentSymbol == Cell.X) ? "Người chơi X" : "Người chơi O";
                     MessageBox.Show($"{winner} thắng!");
-                    if (currentSymbol == Cell.X) wins++; else losses++;
+                    totalGames++; // tăng tổng trận
                     lstHistory.Items.Add($"{winner} thắng ({DateTime.Now:T})");
                     UpdateScore();
                     ResetBoard();
@@ -119,7 +115,7 @@ namespace CaroClient
                 if (CheckWin(row, col))
                 {
                     MessageBox.Show("Bạn thắng!");
-                    wins++;
+                    totalGames++;
                     UpdateScore();
                     ResetBoard();
                     return;
@@ -128,7 +124,7 @@ namespace CaroClient
                 panelBoard.Invalidate();
                 AITurn();
             }
-            else if (currentMode == "Người")
+            else if (currentMode == "Online")
             {
                 if (!myTurn || writer == null) return;
                 board[row, col] = mySymbol;
@@ -144,7 +140,6 @@ namespace CaroClient
             panelBoard.Invalidate();
         }
 
-        // ======================= AI =======================
         private void AITurn()
         {
             Thread.Sleep(300);
@@ -155,7 +150,7 @@ namespace CaroClient
             if (CheckWin(r, c))
             {
                 MessageBox.Show("Máy thắng!");
-                losses++;
+                totalGames++;
                 UpdateScore();
                 ResetBoard();
                 return;
@@ -166,12 +161,10 @@ namespace CaroClient
 
         private (int, int) FindBestMove()
         {
-            // AI đơn giản nhưng hiệu quả: tấn công + block
             int bestScore = -1;
             int bestR = -1, bestC = -1;
 
             for (int r = 0; r < BOARD_SIZE; r++)
-            {
                 for (int c = 0; c < BOARD_SIZE; c++)
                 {
                     if (board[r, c] != Cell.Empty) continue;
@@ -183,7 +176,6 @@ namespace CaroClient
                         bestC = c;
                     }
                 }
-            }
 
             return (bestR, bestC);
         }
@@ -199,13 +191,12 @@ namespace CaroClient
                 score = Math.Max(score, line);
             }
 
-            // Block người chơi
             int playerLine = 1 + Count(r, c, 0, 1, Cell.X) + Count(r, c, 0, -1, Cell.X);
             playerLine = Math.Max(playerLine, 1 + Count(r, c, 1, 0, Cell.X) + Count(r, c, -1, 0, Cell.X));
             playerLine = Math.Max(playerLine, 1 + Count(r, c, 1, 1, Cell.X) + Count(r, c, -1, -1, Cell.X));
             playerLine = Math.Max(playerLine, 1 + Count(r, c, 1, -1, Cell.X) + Count(r, c, -1, 1, Cell.X));
 
-            score += playerLine * 2; // ưu tiên block người chơi
+            score += playerLine * 2;
             return score;
         }
 
@@ -221,7 +212,6 @@ namespace CaroClient
             return cnt;
         }
 
-        // ======================= Check Win =======================
         private bool CheckWin(int r, int c)
         {
             int[][] dirs = new int[][] { new int[]{0,1}, new int[]{1,0}, new int[]{1,1}, new int[]{1,-1} };
@@ -237,14 +227,10 @@ namespace CaroClient
 
         private void UpdateScore()
         {
-            lblScore.Text = $"Tỷ số: {wins} - {losses}";
+            lblScore.Text = $"Số trận: {totalGames}";
         }
 
-        // ======================= CHAT =======================
-        private void BtnSend_Click(object sender, EventArgs e)
-        {
-            SendMessage();
-        }
+        private void BtnSend_Click(object sender, EventArgs e) => SendMessage();
 
         private void TxtMessage_KeyDown(object sender, KeyEventArgs e)
         {
@@ -259,20 +245,15 @@ namespace CaroClient
         {
             if (string.IsNullOrWhiteSpace(txtMessage.Text)) return;
             string msg = txtMessage.Text.Trim();
-            if (isOnline && writer != null)
-            {
-                writer.WriteLine($"CHAT {msg}");
-            }
-            // rtbChat.AppendText($"Bạn: {msg}{Environment.NewLine}");
+            if (isOnline && writer != null) writer.WriteLine($"CHAT {msg}");
             txtMessage.Clear();
         }
 
-        // ======================= BUTTON =======================
         private void btnConnect_Click(object sender, EventArgs e)
         {
             currentMode = comboBoxMode.SelectedItem?.ToString() ?? "Local 2P";
             isAI = currentMode == "Máy";
-            isOnline = currentMode == "Người";
+            isOnline = currentMode == "Online";
             ResetBoard();
 
             if (isAI)
@@ -287,7 +268,7 @@ namespace CaroClient
             else if (isOnline)
             {
                 string ip = txtIP.Text.Trim();
-                if (string.IsNullOrEmpty(ip)) ip = "117.0.0.2";
+                if (string.IsNullOrEmpty(ip)) ip = "127.0.0.1";
 
                 playerName = PromptName();
                 ConnectServer(ip, 5000);
@@ -297,6 +278,19 @@ namespace CaroClient
         private void btnReset_Click(object sender, EventArgs e)
         {
             ResetBoard();
+            lblWinner.Text = "Người thắng: ";
+            lstHistory.Items.Clear();
+            rtbChat.Clear();
+
+            if (currentMode == "Local 2P") { myTurn = true; currentSymbol = Cell.X; }
+            else if (currentMode == "Máy") { myTurn = true; mySymbol = Cell.X; }
+
+            if (isOnline && writer != null)
+            {
+                try { writer.WriteLine("RESET"); } catch { }
+            }
+
+            MessageBox.Show("Đã chơi lại!");
         }
 
         private string PromptName()
@@ -308,15 +302,13 @@ namespace CaroClient
 
                 TextBox t = new TextBox() { Left = 40, Top = 30, Width = 150 };
                 Button ok = new Button() { Text = "OK", Left = 80, Top = 70, DialogResult = DialogResult.OK };
-                f.Controls.Add(t);
-                f.Controls.Add(ok);
+                f.Controls.Add(t); f.Controls.Add(ok);
                 f.AcceptButton = ok;
 
                 return (f.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(t.Text)) ? t.Text : "Người chơi";
             }
         }
 
-        // ======================= ONLINE =======================
         private void ConnectServer(string ip, int port)
         {
             try
@@ -325,7 +317,16 @@ namespace CaroClient
                 reader = new StreamReader(client.GetStream(), Encoding.UTF8);
                 writer = new StreamWriter(client.GetStream(), Encoding.UTF8) { AutoFlush = true };
 
+                string? hello = reader.ReadLine();
+                if (hello == null)
+                {
+                    MessageBox.Show("Máy chủ không phản hồi.");
+                    client.Close();
+                    return;
+                }
+
                 writer.WriteLine(playerName);
+
                 receiveThread = new Thread(ReceiveThread);
                 receiveThread.IsBackground = true;
                 receiveThread.Start();
@@ -335,6 +336,7 @@ namespace CaroClient
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi kết nối: " + ex.Message);
+                try { client?.Close(); } catch { }
             }
         }
 
@@ -345,52 +347,79 @@ namespace CaroClient
                 while (true)
                 {
                     string? msg = reader?.ReadLine();
-                    if (msg == null) continue;
+                    if (msg == null) break;
 
                     this.Invoke(new Action(() =>
                     {
                         if (msg.StartsWith("START"))
                         {
                             string[] p = msg.Split(' ');
-                            string symbol = p[1];
-                            string firstPlayer = p[2];
+                            if (p.Length >= 3)
+                            {
+                                string symbol = p[1];
+                                string firstPlayer = p[2];
 
-                            mySymbol = (symbol == "X") ? Cell.X : Cell.O;
-                            Text = $"Bạn: {playerName} ({mySymbol})";
+                                mySymbol = (symbol == "X") ? Cell.X : Cell.O;
+                                Text = $"Bạn: {playerName} ({mySymbol})";
 
-                            myTurn = (firstPlayer == playerName);
+                                myTurn = (firstPlayer == playerName);
+                            }
                         }
-                        else if (msg == "TURN")
-                        {
-                            myTurn = true;
-                        }
+                        else if (msg == "TURN") myTurn = true;
                         else if (msg.StartsWith("MOVE"))
                         {
                             string[] s = msg.Split(' ');
-                            int r = int.Parse(s[1]);
-                            int c = int.Parse(s[2]);
-                            Cell sym = (s[3] == "X") ? Cell.X : Cell.O;
-                            board[r, c] = sym;
-                            panelBoard.Invalidate();
-                            if (sym != mySymbol) myTurn = true;
+                            if (s.Length >= 4)
+                            {
+                                int r = int.Parse(s[1]);
+                                int c = int.Parse(s[2]);
+                                Cell sym = (s[3] == "X") ? Cell.X : Cell.O;
+                                board[r, c] = sym;
+                                panelBoard.Invalidate();
+                                if (sym != mySymbol) myTurn = true;
+                            }
                         }
                         else if (msg.StartsWith("WIN"))
                         {
                             string[] parts = msg.Split(' ');
-                            string winner = parts[1];
-                            lblWinner.Text = $"Người thắng: {winner}";
-                            lstHistory.Items.Add($"{winner} thắng ({DateTime.Now:T})");
-                            ResetBoard();
+                            if (parts.Length >= 2)
+                            {
+                                string winner = parts[1];
+                                lblWinner.Text = $"Người thắng: {winner}";
+                                lstHistory.Items.Add($"{winner} thắng ({DateTime.Now:T})");
+
+                                totalGames++; // chỉ tăng tổng trận
+                                UpdateScore();
+
+                                ResetBoard();
+                            }
                         }
                         else if (msg.StartsWith("CHAT"))
                         {
-                            string chat = msg.Substring(5);
+                            string chat = msg.Length > 5 ? msg.Substring(5) : "";
                             rtbChat.AppendText($"{chat}{Environment.NewLine}");
+                        }
+                        else if (msg == "RESET")
+                        {
+                            ResetBoard();
+                            lblWinner.Text = "Người thắng: ";
+                            lstHistory.Items.Clear();
+                            rtbChat.Clear();
+                            totalGames = 0;
+                            UpdateScore();
                         }
                     }));
                 }
             }
             catch { }
+            finally
+            {
+                try { client?.Close(); } catch { }
+                this.Invoke(new Action(() =>
+                {
+                    MessageBox.Show("Đã ngắt kết nối với server.");
+                }));
+            }
         }
     }
 }

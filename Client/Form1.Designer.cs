@@ -77,7 +77,7 @@ namespace CaroClient
             // ===================== ComboBoxMode =====================
             this.comboBoxMode.Location = new System.Drawing.Point(550, 30);
             this.comboBoxMode.Size = new System.Drawing.Size(150, 30);
-            this.comboBoxMode.Items.AddRange(new object[] { "Local 2P", "Máy", "Người" });
+            this.comboBoxMode.Items.AddRange(new object[] { "Local 2P", "Máy", "Online" });
             this.Controls.Add(this.comboBoxMode);
 
             // ===================== lblDifficulty =====================
