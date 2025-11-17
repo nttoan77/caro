@@ -30,7 +30,7 @@ namespace CaroServer
         {
             if (P1 != null && P2 != null)
             {
-                // ---- [Sửa 1] Random chọn ai đi X trước ----
+                // ----  Random chọn ai đi X trước ----
                 if (rnd.Next(2) == 0)
                 {
                     Send(P1, $"START X {P1.Name}");
@@ -103,7 +103,7 @@ namespace CaroServer
                 return;
             }
 
-            // ---- [Sửa 2] Ghép phòng với lock ----
+            // ---- Ghép phòng với lock ----
             lock (waitingPlayers)
             {
                 waitingPlayers.Add(p);
@@ -158,7 +158,7 @@ namespace CaroServer
                         File.AppendAllText("result.txt", log + Environment.NewLine);
                         Console.WriteLine($"SAVE RESULT => {log}");
 
-                        // ---- [Sửa 3] WIN chỉ gửi 2 tham số ----
+                        // ----  WIN chỉ gửi 2 tham số ----
                         Send(r.P1, $"WIN {winnerName} {scores[winnerName]}");
                         Send(r.P2, $"WIN {winnerName} {scores[winnerName]}");
 
@@ -166,7 +166,7 @@ namespace CaroServer
                     }
                     else if (msg.StartsWith("CHAT"))
                     {
-                        // ---- [Sửa 4] Chat gửi kèm tên người gửi ----
+                        // ----  Chat gửi kèm tên người gửi ----
                         string chatText = msg.Substring(5).Trim(); // bỏ "CHAT "
                         string fullMsg = $"{p.Name}: {chatText}";
 
@@ -185,7 +185,7 @@ namespace CaroServer
                         Room? r = p.RoomRef;
                         if (r?.P1 != null && r?.P2 != null)
                         {
-                            r.Reset(); // reset ván mới
+                            r.Reset(); 
                         }
                     }
 
@@ -199,7 +199,7 @@ namespace CaroServer
             {
                 client.Close();
 
-                // ---- [Sửa 5] Thông báo đối thủ nếu client disconnect ----
+                // ----  Thông báo đối thủ nếu client disconnect ----
                 lock (waitingPlayers)
                 {
                     waitingPlayers.Remove(p);

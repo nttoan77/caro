@@ -268,7 +268,7 @@ namespace CaroClient
             else if (isOnline)
             {
                 string ip = txtIP.Text.Trim();
-                if (string.IsNullOrEmpty(ip)) ip = "127.0.0.1";
+                if (string.IsNullOrEmpty(ip)) ip = "192.168.19.1";
 
                 playerName = PromptName();
                 ConnectServer(ip, 5000);
